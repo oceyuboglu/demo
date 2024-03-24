@@ -17,40 +17,46 @@ def load_data():
     df = pd.DataFrame(data)
     return df
 
-df = load_data()
+def main():
+    st.title('Business Intelligence Dashboard')
 
-# Set up sidebar
-st.sidebar.title('Filters')
-date_range = st.sidebar.date_input('Select Date Range', [df['Date'].min(), df['Date'].max()])
+    df = load_data()
 
-# Filter data based on date range
-filtered_df = df[(df['Date'] >= date_range[0]) & (df['Date'] <= date_range[1])]
+    # Set up sidebar
+    st.sidebar.title('Filters')
+    date_range = st.sidebar.date_input('Select Date Range', [df['Date'].min(), df['Date'].max()])
 
-# Sales and Profit visualization
-st.title('Sales and Profit Analysis')
-st.header('Sales and Profit Over Time')
+    # Filter data based on date range
+    filtered_df = df[(df['Date'] >= date_range[0]) & (df['Date'] <= date_range[1])]
 
-# Line chart for Sales and Profit over time
-plt.figure(figsize=(10, 6))
-sns.lineplot(data=filtered_df, x='Date', y='Sales', label='Sales')
-sns.lineplot(data=filtered_df, x='Date', y='Profit', label='Profit')
-plt.xlabel('Date')
-plt.ylabel('Amount')
-plt.title('Sales and Profit Over Time')
-plt.legend()
-st.pyplot()
+    # Sales and Profit visualization
+    st.header('Sales and Profit Analysis')
+    st.subheader('Sales and Profit Over Time')
 
-# Monthly Sales and Profit Summary
-st.header('Monthly Sales and Profit Summary')
+    # Line chart for Sales and Profit over time
+    plt.figure(figsize=(10, 6))
+    sns.lineplot(data=filtered_df, x='Date', y='Sales', label='Sales')
+    sns.lineplot(data=filtered_df, x='Date', y='Profit', label='Profit')
+    plt.xlabel('Date')
+    plt.ylabel('Amount')
+    plt.title('Sales and Profit Over Time')
+    plt.legend()
+    st.pyplot()
 
-# Group by month
-monthly_summary = filtered_df.resample('M', on='Date').sum()
+    # Monthly Sales and Profit Summary
+    st.subheader('Monthly Sales and Profit Summary')
 
-# Bar chart for monthly sales and profit
-plt.figure(figsize=(10, 6))
-monthly_summary.plot(kind='bar', stacked=True)
-plt.xlabel('Month')
-plt.ylabel('Amount')
-plt.title('Monthly Sales and Profit Summary')
-plt.xticks(rotation=45)
-st.pyplot()
+    # Group by month
+    monthly_summary = filtered_df.resample('M', on='Date').sum()
+
+    # Bar chart for monthly sales and profit
+    plt.figure(figsize=(10, 6))
+    monthly_summary.plot(kind='bar', stacked=True)
+    plt.xlabel('Month')
+    plt.ylabel('Amount')
+    plt.title('Monthly Sales and Profit Summary')
+    plt.xticks(rotation=45)
+    st.pyplot()
+
+if __name__ == "__main__":
+    main()
